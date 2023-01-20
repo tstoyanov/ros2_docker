@@ -4,7 +4,7 @@ LABEL maintainer="Todor Stoyanov"
 SHELL ["/bin/bash", "-c"]
 
 #Make sure python is installed
-RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 vim curl gnupg wget bash-completion
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 vim curl gnupg wget bash-completion xterm less gdb
 
 #enable autocompletion
 RUN sh -c 'echo "\n if ! shopt -oq posix; then \n if [ -f /usr/share/bash-completion/bash_completion ]; then \n . /usr/share/bash-completion/bash_completion \n elif [ -f /etc/bash_completion ]; then \n . /etc/bash_completion \n fi \n fi" >> /etc/bash.bashrc'
