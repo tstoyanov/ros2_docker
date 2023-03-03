@@ -21,7 +21,20 @@ RUN apt-get update && apt-get install -y libignition-gazebo5-dev
 RUN apt-get update && apt-get install -y ros-galactic-ros-ign-bridge ros-galactic-ros2-control ros-galactic-ros2-controllers ignition-edifice ros-galactic-turtlebot4-simulator ros-galactic-irobot-create-nodes
 
 RUN rosdep update
-RUN source /opt/ros/galactic/setup.bash && ign fuel download --url https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Depot
+RUN source /opt/ros/galactic/setup.bash && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Depot && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Warehouse && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/Tugbot-charging-station && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/Tugbot && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/cart_model_2 && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/shelf_big && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/shelf && \
+    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/pallet_box_mobile && \
+    ign fuel download --url "https://fuel.ignitionrobotics.org/1.0/OpenRobotics/worlds/Tugbot in Warehouse"
+
+#pytorch and torchvision CPU versions
+RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
 
 #RUN mkdir -p /workspace/src && cd /workspace/src \
 #   && git clone https://github.com/turtlebot/turtlebot4_simulator.git \

@@ -13,5 +13,5 @@ docker run --gpus all --name ros2 -it --rm  \
         --volume="/home/tsv/code/ros2ws:/workspace" \
    	-e NB_UID=1000 -e NB_GID=1000 -e VNC_SERVER_PASSWORD=password \
    	-p 6006:6006 -p 5900:5900 -p 8888:8888 \
-  	tstoyanov/ros2:latest bash
+        tstoyanov/ros2:latest bash
 
