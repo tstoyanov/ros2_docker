@@ -1,53 +1,30 @@
-FROM osrf/ros:galactic-desktop
+#FROM nvidia/opengl:1.0-glvnd-devel-ubuntu20.04
+FROM ubuntu:jammy 
 LABEL maintainer="Todor Stoyanov"
 
 SHELL ["/bin/bash", "-c"]
 
 #Make sure python is installed
-RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 vim curl gnupg wget bash-completion xterm less gdb
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip python3 vim curl gnupg wget bash-completion xterm less gdb vim
 
 #enable autocompletion
-RUN sh -c 'echo "\n if ! shopt -oq posix; then \n if [ -f /usr/share/bash-completion/bash_completion ]; then \n . /usr/share/bash-completion/bash_completion \n elif [ -f /etc/bash_completion ]; then \n . /etc/bash_completion \n fi \n fi" >> /etc/bash.bashrc'
-
+#RUN sh -c 'echo "\n if ! shopt -oq posix; then \n if [ -f /usr/share/bash-completion/bash_completion ]; then \n . /usr/share/bash-completion/bash_completion \n elif [ -f /etc/bash_completion ]; then \n . /etc/bash_completion \n fi \n fi" >> /etc/bash.bashrc'
 
 #install useful python packages
 RUN pip3 install pandas matplotlib scipy scikit-learn 
 
-#install ignition sym
-RUN sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main" > /etc/apt/sources.list.d/gazebo-stable.list'
-RUN wget http://packages.osrfoundation.org/gazebo.key -O - | apt-key add -
-RUN apt-get update && apt-get install -y libignition-gazebo5-dev 
+#RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y build-essential cmake libglvnd-dev mesa-utils-extra glmark2 
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y build-essential cmake mesa-utils mesa-utils-extra glmark2 libgl1-mesa-dri
 
-RUN apt-get update && apt-get install -y ros-galactic-ros-ign-bridge ros-galactic-ros2-control ros-galactic-ros2-controllers ignition-edifice ros-galactic-turtlebot4-simulator ros-galactic-irobot-create-nodes
+RUN mkdir /agx/
+COPY agx.lic /agx/
+COPY agx-2.36.1.2-amd64-ubuntu_22.04.deb /agx/
 
-RUN rosdep update
-RUN source /opt/ros/galactic/setup.bash && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Depot && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/OpenRobotics/models/Warehouse && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/Tugbot-charging-station && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/Tugbot && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/cart_model_2 && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/shelf_big && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/shelf && \
-    ign fuel download --url https://fuel.ignitionrobotics.org/1.0/MovAi/models/pallet_box_mobile && \
-    ign fuel download --url "https://fuel.ignitionrobotics.org/1.0/OpenRobotics/worlds/Tugbot in Warehouse"
-
-#pytorch and torchvision CPU versions
-RUN pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
-
-
-#RUN mkdir -p /workspace/src && cd /workspace/src \
-#   && git clone https://github.com/turtlebot/turtlebot4_simulator.git \
-#   && rosdep update 
-#   && cd /workspace && rosdep install --from-paths src -i -y --rosdistro ${ROS_DISTRO}
-
-#   && git clone https://github.com/iRobotEducation/create3_sim.git \
-#   && git clone https://github.com/turtlebot/turtlebot4.git \
-#   && git clone https://github.com/turtlebot/turtlebot4_desktop.git \
-#   && git clone https://github.com/ros-controls/gz_ros2_control/ \
-#   && git clone https://github.com/iRobotEducation/irobot_create_msgs.git \
-
+RUN apt-get install /agx/agx-2.36.1.2-amd64-ubuntu_22.04.deb -y
 
 RUN ldconfig
 
+COPY entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash"]
 

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nvidia-docker build --tag tstoyanov/ros2 ./
+docker build --tag tstoyanov/agx ./
